@@ -34,7 +34,7 @@ During the backward propagation, gradients for weights and biases are computed t
 
 Learning rate decay is applied to adjust the learning speed of the model over epochs:
 
-$$\[ \text{learning\_rate} = \frac{\text{initial\_learning\_rate}}{1 + \text{decay\_rate} \times \text{epoch}} \]$$
+$$ \[ \text{learning\_rate} = \frac{\text{initial\_learning\_rate}}{1 + \text{decay\_rate} \times \text{epoch}} \] $$
 
 ## Results
 
