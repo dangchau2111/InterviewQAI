@@ -1,23 +1,42 @@
-# Excercise_3
+# MNIST Triplet Loss Neural Network
 
-# Neural Network with Triplet Loss
+## Introduction
 
-This project implements a neural network with a triplet loss function to classify the MNIST dataset. The following sections provide an overview of the code and how it works.
+This project uses a neural network to classify MNIST data using Triplet Loss. The main steps involved are:
 
-## Overview
+1. Loading and preparing the MNIST dataset.
+2. Building and training a simple neural network with one hidden layer and an output layer.
+3. Using Triplet Loss to optimize the model.
+4. Evaluating the model and predicting results for the test data.
 
-The code demonstrates:
-1. Loading and preprocessing the MNIST dataset.
-2. Implementing a simple neural network using NumPy.
-3. Training the model with triplet loss.
-4. Evaluating the model's accuracy.
+## Formula Explanation
 
-## Dependencies
+### Triplet Loss
 
-Ensure you have the following Python packages installed:
-- `numpy`
-- `scikit-learn`
+Triplet Loss is a loss function designed to learn embeddings such that the distance between positive pairs (anchor and positive) is smaller than the distance between negative pairs (anchor and negative) by a certain margin.
 
-You can install these dependencies using pip:
-```sh
-pip install numpy scikit-learn
+The formula for Triplet Loss is:
+
+$$ \[ \text{Loss} = \frac{1}{N} \sum_{i=1}^{N} \max\left(d_{\text{pos}}(i) - d_{\text{neg}}(i) + \text{margin}, 0\right) \] $$
+
+Where:
+- $\(d_{\text{pos}}(i)\)$ is the Euclidean distance between the anchor and positive.
+- $\(d_{\text{neg}}(i)\)$ is the Euclidean distance between the anchor and negative.
+- $\(\text{margin}\)$ is a fixed value to ensure the distance between the anchor and negative is greater than the distance between the anchor and positive.
+
+### Gradient Calculation
+
+During the backward propagation, gradients for weights and biases are computed to update them to minimize the loss. Specifically:
+- **Gradient for weight `W2`**: Calculated by matrix multiplication of activation values of the hidden layer with the gradient of the loss.
+- **Gradient for bias `b2`**: Calculated by summing up the gradient values and normalizing by the number of samples.
+
+### Learning Rate Decay
+
+Learning rate decay is applied to adjust the learning speed of the model over epochs:
+
+$$\[ \text{learning\_rate} = \frac{\text{initial\_learning\_rate}}{1 + \text{decay\_rate} \times \text{epoch}} \]$$
+
+## Results
+
+After training the model for 10 epochs with learning rate decay, the model achieved an accuracy on the test set of:
+
