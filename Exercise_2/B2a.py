@@ -17,6 +17,6 @@ anchor = np.array([1.0, 1.0])
 positive = np.array([1.1, 1.1])
 negative = np.array([2.0, 2.0])
 
-# Tính Triplet Loss với margin = 1.0
+# Calculate Triplet loss with example data and margin = 1
 loss = triplet_loss(anchor, positive, negative, margin=1.0)
 print(f'Triplet Loss: {loss}')
