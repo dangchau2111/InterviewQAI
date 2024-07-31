@@ -33,10 +33,10 @@ class NeuralNetwork:
         self.a2 = self.z2
         return self.a2
 
-    def backward(self, X, y, learning_rate=0.01):
+    def backward(self, X, anchor_embed, positive_embed, negative_embed, learning_rate=0.01):
         # Backward pass
         m = X.shape[0]
-        dz2 = self.a2 - y
+        dz2 = anchor_embed - positive_embed + negative_embed
         dW2 = np.dot(self.a1.T, dz2) / m
         db2 = np.sum(dz2, axis=0, keepdims=True) / m
         da1 = np.dot(dz2, self.W2.T)
@@ -50,7 +50,7 @@ class NeuralNetwork:
         self.W2 -= learning_rate * dW2
         self.b2 -= learning_rate * db2
 
-    @staticmethod
+   
     def triplet_loss(anchor, positive, negative, margin=1.0):
         # Compute Euclidean distance between anchor and positive
         pos_dist = np.sum(np.square(anchor - positive), axis=1)
@@ -60,19 +60,8 @@ class NeuralNetwork:
         loss = np.maximum(pos_dist - neg_dist + margin, 0)
         return np.mean(loss)
 
-    @staticmethod
+   
     def create_triplets(x, y, num_triplets=1000):
-        """
-        Create triplets of (anchor, positive, negative) samples.
-
-        Parameters:
-        - x: Input features (numpy array)
-        - y: Labels (numpy array)
-        - num_triplets: Number of triplets to create (int)
-
-        Returns:
-        - triplets: List of triplets (list of tuples)
-        """
         triplets = []
         for _ in range(num_triplets):
             anchor_idx = np.random.randint(0, x.shape[0])
@@ -88,23 +77,30 @@ model = NeuralNetwork(input_size=28*28, hidden_size=128, output_size=128)
 # Create triplet data
 triplets = NeuralNetwork.create_triplets(X_train, y_train)
 
-# Train the model
+# Hyperparameters
+initial_learning_rate = 0.01
+decay_rate = 0.001
 epochs = 10
-learning_rate = 0.01
 
+# Train the model with learning rate decay
 for epoch in range(epochs):
-    loss = 0
+    # Update learning rate with decay
+    learning_rate = initial_learning_rate / (1 + decay_rate * epoch)
+    
+    total_loss = 0
     for anchor, positive, negative in triplets:
         anchor_embed = model.forward(anchor.reshape(1, -1))
         positive_embed = model.forward(positive.reshape(1, -1))
         negative_embed = model.forward(negative.reshape(1, -1))
         
-        # Calculate loss and update model
+        # Calculate loss
         batch_loss = NeuralNetwork.triplet_loss(anchor_embed, positive_embed, negative_embed)
-        loss += batch_loss
-        model.backward(anchor.reshape(1, -1), anchor_embed)
+        total_loss += batch_loss
+        
+        # Perform backward pass and update weights
+        model.backward(anchor.reshape(1, -1), anchor_embed, positive_embed, negative_embed, learning_rate)
     
-    print(f'Epoch {epoch+1}/{epochs}, Loss: {loss/len(triplets)}')
+    print(f'Epoch {epoch+1}/{epochs}, Loss: {total_loss/len(triplets)}, Learning Rate: {learning_rate}')
 
 # Generate embeddings for training and testing data
 x_train_embed = np.array([model.forward(x.reshape(1, -1)).flatten() for x in X_train])
