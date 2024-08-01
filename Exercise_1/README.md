@@ -4,6 +4,8 @@
 
 This repository contains an implementation of Softmax Regression for the MNIST dataset, a classic benchmark for handwritten digit classification. Softmax Regression is a generalized linear model for multiclass classification problems. In this implementation, we use NumPy to perform all necessary computations.
 
+![Alt text](softmax_schematic_1.png)
+
 ## Explanation
 
 ### Softmax Regression
@@ -17,16 +19,27 @@ $$ P(y = k \mid \mathbf{x}; \mathbf{\theta}) = \frac{\exp(z_k)}{\sum_{j} \exp(z_
 
 where \( z_k \) is the logit for class \( k \) and the denominator sums over all possible classes \( j \).
 
-**Loss Function**:
-The Categorical Cross-Entropy Loss quantifies the difference between predicted probabilities and actual class labels. It is defined as:
+### Categorical Cross-Entropy Loss
 
-$$ \text{Loss} = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_{i,k} \log(p_{i,k}) $$
+The Categorical Cross-Entropy Loss function is defined as:
+
+$$\ \text{Loss} = -\frac{1}{m} \sum_{i=1}^m \sum_{c=1}^C y_{i,c} \log(\hat{y}_{i,c}) \$$
 
 where:
-- $\( m \)$ is the number of samples,
-- $\( K \)$ is the number of classes,
-- $\( y_{i,k} \)$ is a binary indicator (0 or 1) if class label $\( k \)$ is the correct classification for sample $\( i \)$,
-- $\( p_{i,k} \)$ is the predicted probability of class $\( k \)$ for sample $\( i \)$.
+- $\( m \)$ is the number of samples in the batch.
+- $\( y_{i,c} \)$ is the one-hot encoded true label of sample \( i \) for class \( c \).
+- $\( \hat{y}_{i,c} \)$ is the predicted probability of sample \( i \) for class \( c \).
+
+### Gradient of Categorical Cross-Entropy Loss
+
+The gradient of the Categorical Cross-Entropy Loss with respect to the parameters $\(\theta\)$ is:
+
+$$\[ \frac{\partial \text{Loss}}{\partial \theta} = \frac{1}{m} \sum_{i=1}^m ( \hat{y}_i - y_i ) \cdot \frac{\partial \text{z}_i}{\partial \theta} \]$$
+
+where:
+- $\( \hat{y}_i \)$ is the vector of predicted probabilities for sample $\( i \)$.
+- $\( y_i \)$ is the one-hot encoded true label for sample $\( i \)$.
+- $\( \frac{\partial \text{z}_i}{\partial \theta} \)$ is the gradient of the output with respect to the parameters \(\theta\).
 
 **Gradient Descent**:
 Gradient Descent is used to minimize the loss function by iteratively updating model parameters. The update rule is:
@@ -36,6 +49,7 @@ $$ \theta := \theta - \alpha \cdot \nabla_\theta \text{Loss} $$
 where:
 - $\( \alpha \)$ is the learning rate,
 - $\( \nabla_\theta \text{Loss} \)$ is the gradient of the loss function with respect to $\( \theta \)$.
+
 
 **Flow of Computation**:
 1. Compute logits: $\( z = X \cdot \theta \)$
