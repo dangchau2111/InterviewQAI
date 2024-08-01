@@ -58,18 +58,48 @@ class NeuralNetwork:
         neg_dist = np.sum(np.square(anchor - negative), axis=1)
         # Compute Triplet Loss value
         loss = np.maximum(pos_dist - neg_dist + margin, 0)
-        return np.mean(loss)
-
+        return loss
    
     def create_triplets(x, y, num_triplets=1000):
         triplets = []
-        for _ in range(num_triplets):
-            anchor_idx = np.random.randint(0, x.shape[0])
-            anchor_label = y[anchor_idx]
-            positive_idx = np.random.choice(np.where(y == anchor_label)[0])
-            negative_idx = np.random.choice(np.where(y != anchor_label)[0])
-            triplets.append((x[anchor_idx], x[positive_idx], x[negative_idx]))
+        unique_labels = np.unique(y)
+        
+        # Generate triplets for all data classes
+        for label in unique_labels:
+            # Find indices of anchor samples belonging to the current class
+            anchor_indices = np.where(y == label)[0]
+            
+            # Skip this class if there are fewer than 2 anchor samples
+            if len(anchor_indices) < 2:
+                continue
+            
+            # Generate triplets for anchor samples of the current class
+            for anchor_idx in anchor_indices:
+                anchor = x[anchor_idx]
+                
+                # Choose a positive sample from the same class
+                positive_indices = np.where(y == label)[0]
+                positive_indices = positive_indices[positive_indices != anchor_idx]  # Exclude itself
+                if len(positive_indices) == 0:
+                    continue
+                positive_idx = np.random.choice(positive_indices)
+                positive = x[positive_idx]
+                
+                # Choose a negative sample from other classes
+                negative_label = np.random.choice([l for l in unique_labels if l != label])
+                negative_indices = np.where(y == negative_label)[0]
+                negative_idx = np.random.choice(negative_indices)
+                negative = x[negative_idx]
+                
+                triplets.append((anchor, positive, negative))
+                
+                # Stop if the required number of triplets is reached
+                if len(triplets) >= num_triplets:
+                    return np.array(triplets)
+        
+        # If the number of created triplets is less than num_triplets, return all the created triplets
         return np.array(triplets)
+
 
 # Initialize model
 model = NeuralNetwork(input_size=28*28, hidden_size=128, output_size=128)
@@ -99,8 +129,8 @@ for epoch in range(epochs):
         
         # Perform backward pass and update weights
         model.backward(anchor.reshape(1, -1), anchor_embed, positive_embed, negative_embed, learning_rate)
-    
-    print(f'Epoch {epoch+1}/{epochs}, Loss: {total_loss/len(triplets)}, Learning Rate: {learning_rate}')
+    loss = total_loss / len(triplets)
+    print(f'Epoch {epoch+1}/{epochs}, Loss: {loss}')
 
 # Generate embeddings for training and testing data
 x_train_embed = np.array([model.forward(x.reshape(1, -1)).flatten() for x in X_train])
