@@ -36,35 +36,84 @@ $$
 \tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 $$
 
-Where \( x \) is the input to the activation function. The `tanh` function maps input values to the range \([-1, 1]\), providing a non-linear transformation.
+Where $\( x \)$ is the input to the activation function. The `tanh` function maps input values to the range $\([-1, 1]\)$, providing a non-linear transformation.
 
-### Triplet Loss
 
-The triplet loss function is used to ensure that the anchor sample is closer to positive samples (from the same class) than to negative samples (from different classes). The loss is computed as:
+
+# Triplet Loss Derivation
+
+## Introduction
+
+In the triplet loss function, the goal is to ensure that an anchor sample is closer to positive samples (from the same class) than to negative samples (from different classes) by at least a certain margin. 
+
+## Loss Function
+
+The triplet loss function is defined as:
 
 $$
-\text{loss} = \frac{1}{N} \sum{i=1}^{N} \max(\text{posdist}i - \text{negdist}i + \text{margin}, 0)
+\text{loss} = \frac{1}{N} \sum_{i=1}^{N} \max(d(\text{anchor}_i, \text{positive}_i) - d(\text{anchor}_i, \text{negative}_i) + \text{margin}, 0)
 $$
 
 Where:
-- $\( \text{posdist}i \)$ is the squared Euclidean distance between the anchor and positive embeddings for the \(i\)-th triplet.
-- $\( \text{negdist}i \)$ is the squared Euclidean distance between the anchor and negative embeddings for the \(i\)-th triplet.
-- $\( \text{margin} \)$ is a hyperparameter to ensure a minimum distance between positive and negative pairs.
-- $\( N \)$ is the number of triplets.
+- $\( d(a, b) \)$ represents the Euclidean distance between vectors $\( a \)$ and $\( b \)$.
+- $\( \text{margin} \)$ is a predefined constant to ensure that the negative pair is sufficiently far from the anchor.
 
-The loss is averaged over all triplets to provide a single value for optimization.
+## Derivation
 
+### Euclidean Distance
+
+The Euclidean distance between two vectors $\( a \)$ and $\( b \)$ is calculated as:
+
+$$
+d(a, b) = \sqrt{\sum_{j=1}^{d} (a_j - b_j)^2}
+$$
+
+### Loss Without Max Function
+
+The loss without the max function is:
+
+$$
+\text{loss}_i = d(\text{anchor}_i, \text{positive}_i) - d(\text{anchor}_i, \text{negative}_i) + \text{margin}
+$$
 
 ### Gradient Calculation
 
-To update the weights, the gradients are computed as follows:
+The gradient of the loss function with respect to the distances is:
 
-1. **For Output Layer**:
-   - Gradient of the weights and bias with respect to the loss is computed.
+$$
+\frac{\partial \text{loss}_i}{\partial d(\text{anchor}_i, \text{positive}_i)} = 1
+$$
 
-2. **For Hidden Layer**:
-   - The gradient is propagated back using the chain rule, considering the derivative of the `tanh` function.
+$$
+\frac{\partial \text{loss}_i}{\partial d(\text{anchor}_i, \text{negative}_i)} = -1
+$$
 
+### Gradient with Respect to Embeddings
+
+The gradient with respect to the embeddings can be expressed as:
+
+$$
+dz2 = \text{anchor embed} - \text{positive embed} + \text{negative embed}
+$$
+
+This is the result of differentiating the loss function with respect to the embeddings of the anchor, positive, and negative samples.
+
+
+
+# Training results:
+- Epoch 1/10, Loss: 0.95954309
+- Epoch 2/10, Loss: 0.95841543
+- Epoch 3/10, Loss: 0.95805774
+- Epoch 4/10, Loss: 0.95816138
+- Epoch 5/10, Loss: 0.95854916
+- Epoch 6/10, Loss: 0.9591144
+- Epoch 7/10, Loss: 0.95979006
+- Epoch 8/10, Loss: 0.96053239
+- Epoch 9/10, Loss: 0.96131197
+- Epoch 10/10, Loss: 0.96210861
++ Accuracy: 91.76%
+
+  
 ## Benefits of Deep Learning over Traditional Machine Learning Models
 
 - **Feature Learning**: Deep learning models can automatically learn and extract features from raw data, whereas traditional models like softmax regression require manual feature engineering.
