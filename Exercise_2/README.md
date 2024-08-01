@@ -4,6 +4,8 @@ This README explains the concept of Triplet Loss, with two different scenarios:
 1. Basic Triplet Loss with one positive and one negative sample.
 2. Extended Triplet Loss with multiple positive and negative samples.
 
+![Diagram](triplet_loss.png)
+
 ## Overview
 
 Triplet Loss is a loss function used in machine learning to train models to produce embeddings or feature vectors that ensure the similarity of similar items and the dissimilarity of different items. The key idea is to minimize the distance between an anchor and positive samples while maximizing the distance between the anchor and negative samples.
