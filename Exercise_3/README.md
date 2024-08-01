@@ -1,60 +1,76 @@
-# MNIST Triplet Loss Neural Network
+# MNIST Triplet Loss Classification
 
 ## Introduction
 
-This project uses a neural network to classify MNIST data using Triplet Loss. The main steps involved are:
+This project involves classifying images from the MNIST dataset using a custom neural network model with triplet loss. The MNIST dataset consists of grayscale images of handwritten digits from 0 to 9, and this project aims to utilize deep learning techniques to accurately classify these digits.
 
-1. Loading and preparing the MNIST dataset.
-2. Building and training a simple neural network with one hidden layer and an output layer.
-3. Using Triplet Loss to optimize the model.
-4. Evaluating the model and predicting results for the test data.
+## Workflow
 
-## Formula Explanation
+1. **Data Loading and Preprocessing**:
+   - The MNIST dataset is loaded using `fetch_openml` from `sklearn.datasets`.
+   - The data is split into training and testing sets using `train_test_split`.
+   - The features are normalized using `StandardScaler`.
+
+2. **Model Definition**:
+   - A neural network class (`NeuralNetwork`) is defined with an input layer, one hidden layer, and an output layer.
+   - The network uses the `tanh` activation function for the hidden layer.
+
+3. **Training Process**:
+   - **Triplet Generation**: Triplets of anchor, positive, and negative samples are generated using the `create_triplets` method.
+   - **Forward Pass**: The network performs a forward pass to compute embeddings for the anchor, positive, and negative samples.
+   - **Loss Calculation**: The triplet loss is computed to measure how well the model is learning to differentiate between similar and dissimilar samples.
+   - **Backward Pass**: The gradients are computed and weights are updated based on the computed loss.
+
+4. **Evaluation**:
+   - **Embedding Generation**: The model generates embeddings for both training and test data.
+   - **Prediction**: The nearest neighbors in the embedding space are found using cosine distance to classify test samples.
+   - **Accuracy Calculation**: The accuracy of the model on the test set is computed using `accuracy_score`.
+
+## Mathematical Formulas
+
+### Tanh Activation Function
+
+The `tanh` activation function is defined as:
+
+$$
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+$$
+
+Where \( x \) is the input to the activation function. The `tanh` function maps input values to the range \([-1, 1]\), providing a non-linear transformation.
 
 ### Triplet Loss
 
-Triplet Loss is a loss function designed to learn embeddings such that the distance between positive pairs (anchor and positive) is smaller than the distance between negative pairs (anchor and negative) by a certain margin.
+The triplet loss function is used to ensure that the anchor sample is closer to positive samples (from the same class) than to negative samples (from different classes). The loss is computed as:
 
-The formula for Triplet Loss is:
-
-$$ \[ \text{Loss} = \frac{1}{N} \sum_{i=1}^{N} \max\left(d_{\text{pos}}(i) - d_{\text{neg}}(i) + \text{margin}, 0\right) \] $$
+$$
+\text{loss} = \frac{1}{N} \sum{i=1}^{N} \max(\text{posdist}i - \text{negdist}i + \text{margin}, 0)
+$$
 
 Where:
-- $\(d_{\text{pos}}(i)\)$ is the Euclidean distance between the anchor and positive.
-- $\(d_{\text{neg}}(i)\)$ is the Euclidean distance between the anchor and negative.
-- $\(\text{margin}\)$ is a fixed value to ensure the distance between the anchor and negative is greater than the distance between the anchor and positive.
+- $\( \text{posdist}i \)$ is the squared Euclidean distance between the anchor and positive embeddings for the \(i\)-th triplet.
+- $\( \text{negdist}i \)$ is the squared Euclidean distance between the anchor and negative embeddings for the \(i\)-th triplet.
+- $\( \text{margin} \)$ is a hyperparameter to ensure a minimum distance between positive and negative pairs.
+- $\( N \)$ is the number of triplets.
+
+The loss is averaged over all triplets to provide a single value for optimization.
+
 
 ### Gradient Calculation
 
-During the backward propagation, gradients for weights and biases are computed to update them to minimize the loss. Specifically:
-- **Gradient for weight `W2`**: Calculated by matrix multiplication of activation values of the hidden layer with the gradient of the loss.
-- **Gradient for bias `b2`**: Calculated by summing up the gradient values and normalizing by the number of samples.
+To update the weights, the gradients are computed as follows:
 
-### Learning Rate Decay
+1. **For Output Layer**:
+   - Gradient of the weights and bias with respect to the loss is computed.
 
-Learning rate decay is applied to adjust the learning speed of the model over epochs:
+2. **For Hidden Layer**:
+   - The gradient is propagated back using the chain rule, considering the derivative of the `tanh` function.
 
-$$ \[ \text{learning\_rate} = \frac{\text{initial\_learning\_rate}}{1 + \text{decay\_rate} \times \text{epoch}} \] $$
+## Benefits of Deep Learning over Traditional Machine Learning Models
 
-## Results
+- **Feature Learning**: Deep learning models can automatically learn and extract features from raw data, whereas traditional models like softmax regression require manual feature engineering.
+- **Handling Complex Patterns**: Deep learning models, particularly neural networks with multiple layers, can capture complex patterns and relationships in data that simple linear models may miss.
+- **Higher Accuracy**: Deep learning models often achieve higher accuracy on large datasets due to their ability to model intricate patterns.
+- **Scalability**: Deep learning models can scale with increased data and computational power, making them suitable for large-scale problems.
 
-After training the model for 10 epochs with learning rate decay, the model achieved an accuracy on the test set of:
-- Epoch 1/10, Loss: 0.9929696782140297, Learning Rate: 0.01
-- Epoch 2/10, Loss: 0.9980345919063689, Learning Rate: 0.009990009990009992
-- Epoch 3/10, Loss: 0.9988895028178308, Learning Rate: 0.00998003992015968
-- Epoch 4/10, Loss: 0.9991689605712819, Learning Rate: 0.009970089730807579
-- Epoch 5/10, Loss: 0.999327615965891, Learning Rate: 0.0099601593625498
-- Epoch 6/10, Loss: 0.9994112410037328, Learning Rate: 0.009950248756218907
-- Epoch 3/10, Loss: 0.9988895028178308, Learning Rate: 0.00998003992015968
-- Epoch 4/10, Loss: 0.9991689605712819, Learning Rate: 0.009970089730807579
-- Epoch 5/10, Loss: 0.999327615965891, Learning Rate: 0.0099601593625498
-- Epoch 6/10, Loss: 0.9994112410037328, Learning Rate: 0.009950248756218907
-- Epoch 5/10, Loss: 0.999327615965891, Learning Rate: 0.0099601593625498
-- Epoch 6/10, Loss: 0.9994112410037328, Learning Rate: 0.009950248756218907
-- Epoch 6/10, Loss: 0.9994112410037328, Learning Rate: 0.009950248756218907
-- Epoch 7/10, Loss: 0.9994614077490388, Learning Rate: 0.009940357852882704
-- Epoch 8/10, Loss: 0.9995121715861842, Learning Rate: 0.0099304865938431
-- Epoch 9/10, Loss: 0.9995296268506397, Learning Rate: 0.00992063492063492
-- Epoch 10/10, Loss: 0.9995738937151536, Learning Rate: 0.009910802775024779
-- Accuracy: 72.16%
+In summary, deep learning offers a significant advantage in tasks involving large and complex datasets by leveraging its ability to automatically learn and generalize features, outperforming traditional machine learning models in many scenarios.
 
