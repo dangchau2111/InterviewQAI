@@ -15,9 +15,9 @@ Softmax Regression (or Multinomial Logistic Regression) is used for multiclass c
 ## Softmax Function:
 The Softmax function converts logits (raw prediction values) into probabilities. It is defined as:
 
-$$ P(y = k \mid \mathbf{x}; \mathbf{\theta}) = \frac{\exp(z_k)}{\sum_{j} \exp(z_j)} $$
+$$ P(y = k \mid \mathbf{x}; \mathbf{\theta}) = \frac{\exp(z_k - c)}{\sum_{j} \exp(z_j - c)} $$
 
-where \( z_k \) is the logit for class \( k \) and the denominator sums over all possible classes \( j \).
+where \( z_k \) is the logit for class \( k \) and the denominator sums over all possible classes \( j \), c is a constant.
 
 ### Categorical Cross-Entropy Loss
 
