@@ -34,7 +34,7 @@ where:
 
 The gradient of the Categorical Cross-Entropy Loss with respect to the parameters $\(\theta\)$ is:
 
-$$\[ \frac{\partial \text{Loss}}{\partial \theta} = \frac{1}{m} \sum_{i=1}^m ( \hat{y}_i - y_i ) \cdot \frac{\partial \text{z}_i}{\partial \theta} \]$$
+$$\ \frac{\partial \text{Loss}}{\partial \theta} = \frac{1}{m} \sum_{i=1}^m ( \hat{y}_i - y_i ) \cdot \frac{\partial \text{z}_i}{\partial \theta} \$$
 
 where:
 - $\( \hat{y}_i \)$ is the vector of predicted probabilities for sample $\( i \)$.
