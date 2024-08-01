@@ -1,10 +1,6 @@
 import numpy as np
 
 def triplet_loss(anchor, positives, negatives, margin=1.0):
-    # Convert inputs to numpy arrays
-    anchor = np.array(anchor)
-    positives = np.array(positives)
-    negatives = np.array(negatives)
     
     # Calculate distances
     pos_distances = np.sum((anchor - positives) ** 2, axis=1)  # Shape: (number of positives,)
