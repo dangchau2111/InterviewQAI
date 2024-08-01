@@ -26,6 +26,11 @@ This project involves classifying images from the MNIST dataset using a custom n
    - **Prediction**: The nearest neighbors in the embedding space are found using cosine distance to classify test samples.
    - **Accuracy Calculation**: The accuracy of the model on the test set is computed using `accuracy_score`.
 
+### Backward
+![Alt text](Back_ward.png)
+
+### Forward 
+![Alt text](Forward.png)
 ## Mathematical Formulas
 
 ### Tanh Activation Function
@@ -36,7 +41,7 @@ $$
 \tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 $$
 
-Where $\( x \)$ is the input to the activation function. The `tanh` function maps input values to the range $\([-1, 1]\)$, providing a non-linear transformation.
+Where \(x\)\( x \) is the input to the activation function. The `tanh` function maps input values to the range $\([-1, 1]\)$, providing a non-linear transformation.
 
 
 
@@ -55,14 +60,14 @@ $$
 $$
 
 Where:
-- $\( d(a, b) \)$ represents the Euclidean distance between vectors $\( a \)$ and $\( b \)$.
-- $\( \text{margin} \)$ is a predefined constant to ensure that the negative pair is sufficiently far from the anchor.
+- \(d(a,b)\)\( d(a, b) \) represents the Euclidean distance between vectors \(a\)\( a \) and \(b\)\( b \).
+- \(margin\)\( \text{margin} \) is a predefined constant to ensure that the negative pair is sufficiently far from the anchor.
 
 ## Derivation
 
 ### Euclidean Distance
 
-The Euclidean distance between two vectors $\( a \)$ and $\( b \)$ is calculated as:
+The Euclidean distance between two vectors \(a\)\( a \) and \(b\)\( b \) is calculated as:
 
 $$
 d(a, b) = \sqrt{\sum_{j=1}^{d} (a_j - b_j)^2}
