@@ -12,7 +12,7 @@ This repository contains an implementation of Softmax Regression for the MNIST d
 
 Softmax Regression (or Multinomial Logistic Regression) is used for multiclass classification. It estimates the probability distribution over multiple classes given the input features.
 
-**Softmax Function**:
+## Softmax Function:
 The Softmax function converts logits (raw prediction values) into probabilities. It is defined as:
 
 $$ P(y = k \mid \mathbf{x}; \mathbf{\theta}) = \frac{\exp(z_k)}{\sum_{j} \exp(z_j)} $$
@@ -41,7 +41,7 @@ where:
 - $\( y_i \)$ is the one-hot encoded true label for sample $\( i \)$.
 - $\( \frac{\partial \text{z}_i}{\partial \theta} \)$ is the gradient of the output with respect to the parameters \(\theta\).
 
-**Gradient Descent**:
+## Gradient Descent:
 Gradient Descent is used to minimize the loss function by iteratively updating model parameters. The update rule is:
 
 $$ \theta := \theta - \alpha \cdot \nabla_\theta \text{Loss} $$
@@ -51,7 +51,7 @@ where:
 - $\( \nabla_\theta \text{Loss} \)$ is the gradient of the loss function with respect to $\( \theta \)$.
 
 
-**Flow of Computation**:
+## Flow of Computation**:
 1. Compute logits: $\( z = X \cdot \theta \)$
 2. Apply Softmax to obtain class probabilities: $\( p = \text{softmax}(z) \)$
 3. Compute Cross-Entropy Loss: $\( \text{Loss} = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_{i,k} \log(p_{i,k}) \)$
