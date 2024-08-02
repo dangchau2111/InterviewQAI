@@ -4,7 +4,7 @@
 
 This repository contains an implementation of Softmax Regression for the MNIST dataset, a classic benchmark for handwritten digit classification. Softmax Regression is a generalized linear model for multiclass classification problems. In this implementation, we use NumPy to perform all necessary computations.
 
-![Alt text](softmax_schematic_1.png)
+![Softmax Schematic](softmax_schematic_1.png)
 
 ## Explanation
 
@@ -12,73 +12,85 @@ This repository contains an implementation of Softmax Regression for the MNIST d
 
 Softmax Regression (or Multinomial Logistic Regression) is used for multiclass classification. It estimates the probability distribution over multiple classes given the input features.
 
-## Softmax Function:
+#### Softmax Function
+
 The Softmax function converts logits (raw prediction values) into probabilities. It is defined as:
 
-P(y=k∣x;θ)=exp(zk−c)∑jexp(zj−c) P(y = k \mid \mathbf{x}; \mathbf{\theta}) = \frac{\exp(z_k - c)}{\sum_{j} \exp(z_j - c)} 
+$$
+P(y = k \mid \mathbf{x}; \mathbf{\theta}) = \frac{\exp(z_k - c)}{\sum_{j} \exp(z_j - c)}
+$$
 
-where \( z_k \) is the logit for class \( k \) and the denominator sums over all possible classes \( j \), c is a constant.
+where:
+- $\( z_k \)$ is the logit for class $\( k \)$
+- The denominator sums over all possible classes $\( j \)$
+- $\( c \)$ is a constant
 
-### Categorical Cross-Entropy Loss
+#### Categorical Cross-Entropy Loss
 
 The Categorical Cross-Entropy Loss function is defined as:
 
-$$\ \text{Loss} = -\frac{1}{m} \sum_{i=1}^m \sum_{c=1}^C y_{i,c} \log(\hat{y}_{i,c}) \$$
+$$
+\text{Loss} = -\frac{1}{m} \sum_{i=1}^m \sum_{c=1}^C y_{i,c} \log(\hat{y}_{i,c})
+$$
 
 where:
-- \(m\)\( m \) is the number of samples in the batch.
-- \(yi,c\)\( y_{i,c} \) is the one-hot encoded true label of sample \( i \) for class \( c \).
-- \(ˆyi,c\)\( \hat{y}_{i,c} \) is the predicted probability of sample \( i \) for class \( c \).
+- $\( m \)$ is the number of samples in the batch
+- $\( y_{i,c} \)$ is the one-hot encoded true label of sample $\( i \)$ for class $\( c \)$
+- $\( \hat{y}_{i,c} \)$ is the predicted probability of sample $\( i \)$ for class $\( c \)$
 
-### Gradient of Categorical Cross-Entropy Loss
+#### Gradient of Categorical Cross-Entropy Loss
 
-The gradient of the Categorical Cross-Entropy Loss with respect to the parameters \(θ\)\(\theta\) is:
+The gradient of the Categorical Cross-Entropy Loss with respect to the parameters $\( \theta \)$ is:
 
-$$\ \frac{\partial \text{Loss}}{\partial \theta} = \frac{1}{m} \sum_{i=1}^m ( \hat{y}_i - y_i ) \cdot \frac{\partial \text{z}_i}{\partial \theta} \$$
+$$
+\frac{\partial \text{Loss}}{\partial \theta} = \frac{1}{m} \sum_{i=1}^m (\hat{y}_i - y_i) \cdot \frac{\partial z_i}{\partial \theta}
+$$
 
 where:
-- \(ˆyi\)\( \hat{y}_i \) is the vector of predicted probabilities for sample \(i\)\( i \).
-- \(yi\)\( y_i \) is the one-hot encoded true label for sample \(i\)\( i \).
-- \(∂zi∂θ\)\( \frac{\partial \text{z}_i}{\partial \theta} \) is the gradient of the output with respect to the parameters \(\theta\).
+- $\( \hat{y}_i \)$ is the vector of predicted probabilities for sample $\( i \)$
+- $\( y_i \)$ is the one-hot encoded true label for sample $\( i \)$
+- $\( \frac{\partial z_i}{\partial \theta} \)$ is the gradient of the output with respect to the parameters $\( \theta \)$
 
-## Gradient Descent:
+### Gradient Descent
+
 Gradient Descent is used to minimize the loss function by iteratively updating model parameters. The update rule is:
 
-θ:=θ−α⋅∇θLoss \theta := \theta - \alpha \cdot \nabla_\theta \text{Loss} 
+$$
+\theta := \theta - \alpha \cdot \nabla_\theta \text{Loss}
+$$
 
 where:
-- \(α\)\( \alpha \) is the learning rate,
-- \(∇θLoss\)\( \nabla_\theta \text{Loss} \) is the gradient of the loss function with respect to \(θ\)\( \theta \).
+- $\( \alpha \)$ is the learning rate
+- $\( \nabla_\theta \text{Loss} \)$ is the gradient of the loss function with respect to $\( \theta \)$
 
+## Flow of Computation
 
-## Flow of Computation**:
-1. Compute logits: \(z=X⋅θ\)\( z = X \cdot \theta \)
-2. Apply Softmax to obtain class probabilities: \(p=softmax(z)\)\( p = \text{softmax}(z) \)
-3. Compute Cross-Entropy Loss: \(Loss=−1m∑mi=1∑Kk=1yi,klog(pi,k)\)\( \text{Loss} = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_{i,k} \log(p_{i,k}) \)
-4. Update parameters using Gradient Descent: \(θ:=θ−α⋅∇θLoss\)\( \theta := \theta - \alpha \cdot \nabla_\theta \text{Loss} \)
+1. **Compute logits**: $\( z = X \cdot \theta \)$
+2. **Apply Softmax** to obtain class probabilities: $\( p = \text{softmax}(z) \)$
+3. **Compute Cross-Entropy Loss**: $\( \text{Loss} = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_{i,k} \log(p_{i,k}) \)$
+4. **Update parameters using Gradient Descent**: $\( \theta := \theta - \alpha \cdot \nabla_\theta \text{Loss} \)$
 
 ## Execution
 
 ### Training Results
 
 The model was trained for 1000 iterations with the following loss values recorded at various checkpoints:
-- Iteration 0: Loss = 1.5888747638492926
-- Iteration 100: Loss = 0.34419817129761715
-- Iteration 200: Loss = 0.3092600330260409
-- Iteration 300: Loss = 0.2938721864571801
-- Iteration 400: Loss = 0.284682588933372
-- Iteration 500: Loss = 0.27837018341530406
-- Iteration 600: Loss = 0.27366197008872023
-- Iteration 700: Loss = 0.26995334508320085
-- Iteration 800: Loss = 0.26691662627460555
-- Iteration 900: Loss = 0.26435794986878547
+- Iteration 0: Loss = 1.5889
+- Iteration 100: Loss = 0.3442
+- Iteration 200: Loss = 0.3093
+- Iteration 300: Loss = 0.2939
+- Iteration 400: Loss = 0.2847
+- Iteration 500: Loss = 0.2784
+- Iteration 600: Loss = 0.2737
+- Iteration 700: Loss = 0.2700
+- Iteration 800: Loss = 0.2669
+- Iteration 900: Loss = 0.2644
 
-Accuracy: 91.89%
-
+**Accuracy**: 91.89%
 
 ## References
 
 - [MNIST Dataset](http://yann.lecun.com/exdb/mnist/)
-- [Softmax Regression Explained]([https://towardsdatascience.com/softmax-regression-a-guide-for-machine-learning-4bdb4c30ff6c](https://machinelearningcoban.com/2017/02/17/softmax/#-gioi-thieu))
+- [Softmax Regression Explained](https://machinelearningcoban.com/2017/02/17/softmax/#-gioi-thieu)
 
 Feel free to explore the code and modify it to suit your needs!
